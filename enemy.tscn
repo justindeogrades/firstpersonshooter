@@ -1,11 +1,33 @@
-[gd_scene load_steps=2 format=3 uid="uid://crotopo1fdjeg"]
+[gd_scene load_steps=5 format=3 uid="uid://crotopo1fdjeg"]
 
+[ext_resource type="Script" uid="uid://1jm6awng7v27" path="res://enemy.gd" id="1_4gyqm"]
 [ext_resource type="Texture2D" uid="uid://dw4tryi3yerf7" path="res://icon.svg" id="1_7k104"]
+[ext_resource type="PackedScene" uid="uid://b3plxqqbt2u7w" path="res://hp_component.tscn" id="2_qi2p4"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_7k104"]
 
 [node name="Enemy" type="CharacterBody3D"]
+script = ExtResource("1_4gyqm")
+
+[node name="HPComponent" parent="." node_paths=PackedStringArray("hurtbox", "hp_label") instance=ExtResource("2_qi2p4")]
+hurtbox = NodePath("../Hurtbox")
+hp_label = NodePath("../HP")
 
 [node name="Sprite3D" type="Sprite3D" parent="."]
 cast_shadow = 0
 modulate = Color(1, 0, 0, 1)
 billboard = 1
 texture = ExtResource("1_7k104")
+
+[node name="Hurtbox" type="Area3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Hurtbox"]
+shape = SubResource("BoxShape3D_7k104")
+
+[node name="HP" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+billboard = 1
+text = "Hello bro"
+
+[connection signal="area_entered" from="Hurtbox" to="." method="_on_hurtbox_area_entered"]
+[connection signal="area_entered" from="Hurtbox" to="HPComponent" method="_on_hurtbox_area_entered"]

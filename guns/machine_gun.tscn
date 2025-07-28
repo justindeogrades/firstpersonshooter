@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://cbtkrj15ysrdc"]
+
+[ext_resource type="Script" uid="uid://cw11p7sjrucc4" path="res://gun.gd" id="1_sh1sg"]
+
+[node name="MachineGun" type="Node3D"]
+script = ExtResource("1_sh1sg")
+damage = 1.0
+cooldown_seconds = 0.2

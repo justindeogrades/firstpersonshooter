@@ -1,0 +1,27 @@
+[gd_scene load_steps=4 format=3 uid="uid://docjc7qyh8vv0"]
+
+[ext_resource type="Script" uid="uid://khf6p6qp2ha1" path="res://bullet.gd" id="1_v8qja"]
+[ext_resource type="Texture2D" uid="uid://dw4tryi3yerf7" path="res://icon.svg" id="2_t4vbm"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_v8qja"]
+size = Vector3(0.2, 0.2, 0.2)
+
+[node name="Bullet" type="RigidBody3D"]
+gravity_scale = 0.0
+script = ExtResource("1_v8qja")
+
+[node name="Sprite3D" type="Sprite3D" parent="."]
+transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 0, 0)
+modulate = Color(0, 1, 1, 1)
+billboard = 1
+texture = ExtResource("2_t4vbm")
+
+[node name="Hitbox" type="Area3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Hitbox"]
+shape = SubResource("BoxShape3D_v8qja")
+
+[node name="Lifetime" type="Timer" parent="."]
+
+[connection signal="area_entered" from="Hitbox" to="." method="_on_hitbox_area_entered"]
+[connection signal="timeout" from="Lifetime" to="." method="_on_lifetime_timeout"]
