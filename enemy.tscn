@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://crotopo1fdjeg"]
+
+[ext_resource type="Texture2D" uid="uid://dw4tryi3yerf7" path="res://icon.svg" id="1_7k104"]
+
+[node name="Enemy" type="CharacterBody3D"]
+
+[node name="Sprite3D" type="Sprite3D" parent="."]
+cast_shadow = 0
+modulate = Color(1, 0, 0, 1)
+billboard = 1
+texture = ExtResource("1_7k104")
