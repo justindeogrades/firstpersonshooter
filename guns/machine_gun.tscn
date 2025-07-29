@@ -5,4 +5,7 @@
 [node name="MachineGun" type="Node3D"]
 script = ExtResource("1_sh1sg")
 damage = 1.0
-cooldown_seconds = 0.2
+max_clip_ammo = 20
+max_reserve_ammo = 100
+reload_seconds = 1.0
+cooldown_seconds = 0.1

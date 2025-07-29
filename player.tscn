@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=3 uid="uid://c0vtrpdt2d62k"]
+[gd_scene load_steps=5 format=3 uid="uid://c0vtrpdt2d62k"]
 
 [ext_resource type="Script" uid="uid://bhtxkn8jmnjbv" path="res://player.gd" id="1_4flbx"]
 [ext_resource type="PackedScene" uid="uid://cbtkrj15ysrdc" path="res://guns/machine_gun.tscn" id="2_onrkg"]
+[ext_resource type="PackedScene" uid="uid://l0b3a730q55b" path="res://hud.tscn" id="3_i3pqv"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_4flbx"]
 
@@ -23,3 +24,5 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.60231, 0)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.41584, 0)
 
 [node name="MachineGun" parent="Head/Camera3D/Weapons" instance=ExtResource("2_onrkg")]
+
+[node name="HUD" parent="." instance=ExtResource("3_i3pqv")]

@@ -7,27 +7,42 @@ extends Node3D
 #@export var bullet : NodePath
 @export var bullet_path : String = "res://bullet.tscn"
 @export var bullet_parent : Node
+@export var reload_timer : Timer
 #Make sure One-shot is enabled on the cooldown timer
 @export var cooldown_timer : Timer
 @export var aim_ray : RayCast3D
 
 @export var damage : float
+@export var max_clip_ammo : int
+@export var max_reserve_ammo : int
+@export var reload_seconds : float
 @export var cooldown_seconds : float
 @export var hip_spray : float
 @export var aim_spray : float
 @export var bullets_per_shot : int = 1
 @export var pierces : int = 1
 
+var clip_ammo
+var reserve_ammo
+
 var aiming : bool = false
 var aim_direction : Vector3
+
+signal ammo_updated(reloading : bool)
+#Obsolete signal, might delete
+#signal reload_complete
 
 #Assigned by parent
 var parent : CharacterBody3D
 
 func _ready() -> void:
+	create_reload_timer()
 	create_cooldown_timer()
 	create_bullet_parent()
 	create_aim_ray()
+	
+	clip_ammo = max_clip_ammo
+	reserve_ammo = max_reserve_ammo
 
 func _physics_process(delta: float) -> void:
 	#Aim direction is now set by parent
@@ -38,9 +53,8 @@ func _physics_process(delta: float) -> void:
 	pass
 
 func shoot():
-	if(cooldown_timer.is_stopped()):
-		#var bullet_instance = load(bullet).instantiate()
-		
+	#Check for not reloading, not on cooldown, and has ammo
+	if reload_timer.is_stopped() and cooldown_timer.is_stopped() and clip_ammo > 0:
 		for i in bullets_per_shot:
 			var bullet_instance = load(bullet_path).instantiate()
 			
@@ -62,15 +76,44 @@ func shoot():
 			#bullet_parent.add_child(bullet_instance)
 			get_main().add_child(bullet_instance)
 		
+		clip_ammo -= 1
+		
 		cooldown_timer.start(cooldown_seconds)
+		
+		ammo_updated.emit(false)
+
+func reload() -> void:
+	if reload_timer.is_stopped():
+		reload_timer.start(reload_seconds)
+		ammo_updated.emit(true)
+
+func _on_reload_timer_timeout() -> void:
+	
+	var ammo_to_reload = max_clip_ammo - clip_ammo
+		
+	if ammo_to_reload > reserve_ammo:
+		ammo_to_reload = reserve_ammo
+		
+	reserve_ammo -= ammo_to_reload
+	clip_ammo += ammo_to_reload
+	
+	ammo_updated.emit(true)
+	#reload_complete.emit()
 
 #Will make this a static method at some point
 func get_main() -> Node:
 	return parent.get_parent()
 
+#Now obsolete, get rid of this later
 func create_bullet_parent():
 	bullet_parent = Node.new()
 	add_child(bullet_parent)
+
+func create_reload_timer() -> void:
+	reload_timer = Timer.new()
+	reload_timer.one_shot = true
+	reload_timer.timeout.connect(_on_reload_timer_timeout)
+	add_child(reload_timer)
 
 func create_cooldown_timer():
 	cooldown_timer = Timer.new()
