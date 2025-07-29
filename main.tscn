@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://cw8os0hibkoo5"]
+[gd_scene load_steps=6 format=3 uid="uid://cw8os0hibkoo5"]
 
 [ext_resource type="PackedScene" uid="uid://c0vtrpdt2d62k" path="res://player.tscn" id="1_0xm2m"]
 [ext_resource type="PackedScene" uid="uid://crotopo1fdjeg" path="res://enemy.tscn" id="2_1bvp3"]
 [ext_resource type="PackedScene" uid="uid://bji7mwhcmvk07" path="res://world.tscn" id="2_h2yge"]
 [ext_resource type="PackedScene" uid="uid://bqdhericuavix" path="res://alt_enemy.tscn" id="4_1bvp3"]
+[ext_resource type="PackedScene" uid="uid://bycphglep5rwx" path="res://box.tscn" id="5_lquwl"]
 
 [node name="Main" type="Node"]
 
@@ -18,3 +19,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.807215, -7.89392)
 
 [node name="World" parent="." instance=ExtResource("2_h2yge")]
 transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 0.0367832, -0.0710125, 0.0820265)
+
+[node name="Box" parent="World" instance=ExtResource("5_lquwl")]
+transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, -0.00367832, 0.0578907, -0.00820265)
+skeleton = NodePath("../..")

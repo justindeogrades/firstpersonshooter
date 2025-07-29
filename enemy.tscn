@@ -17,6 +17,7 @@ hp_label = NodePath("../HP")
 cast_shadow = 0
 modulate = Color(1, 0, 0, 1)
 billboard = 1
+shaded = true
 texture = ExtResource("1_7k104")
 
 [node name="Hurtbox" type="Area3D" parent="."]

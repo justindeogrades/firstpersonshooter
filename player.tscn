@@ -1,15 +1,17 @@
-[gd_scene load_steps=5 format=3 uid="uid://c0vtrpdt2d62k"]
+[gd_scene load_steps=6 format=3 uid="uid://c0vtrpdt2d62k"]
 
 [ext_resource type="Script" uid="uid://bhtxkn8jmnjbv" path="res://player.gd" id="1_4flbx"]
+[ext_resource type="PackedScene" uid="uid://c7c1hebwg3vmy" path="res://flashlight.tscn" id="2_hqtel"]
 [ext_resource type="PackedScene" uid="uid://cbtkrj15ysrdc" path="res://guns/machine_gun.tscn" id="2_onrkg"]
 [ext_resource type="PackedScene" uid="uid://l0b3a730q55b" path="res://hud.tscn" id="3_i3pqv"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_4flbx"]
 
-[node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("head", "camera")]
+[node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("head", "camera", "flashlight")]
 script = ExtResource("1_4flbx")
 head = NodePath("Head")
 camera = NodePath("Head/Camera3D")
+flashlight = NodePath("Head/Camera3D/Flashlight")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.18799, 0)
@@ -19,6 +21,8 @@ shape = SubResource("BoxShape3D_4flbx")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.60231, 0)
 
 [node name="Camera3D" type="Camera3D" parent="Head"]
+
+[node name="Flashlight" parent="Head/Camera3D" instance=ExtResource("2_hqtel")]
 
 [node name="Weapons" type="Node3D" parent="Head/Camera3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.41584, 0)

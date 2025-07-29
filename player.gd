@@ -7,9 +7,11 @@ const JUMP_VELOCITY = 4.5
 @onready var hud = $HUD
 #Will access this through a HUD script later
 @onready var ammo_label = $HUD/Ammo
+@onready var battery_label = $HUD/Battery
 
 @export var head : Node3D
 @export var camera : Camera3D
+@export var flashlight : SpotLight3D
 @export var turn_speed : float = 0.005
 @export var min_camera_x_rotation = -90
 @export var max_camera_x_rotation = 90
@@ -24,7 +26,10 @@ func _ready() -> void:
 	active_weapon.ammo_updated.connect(_on_active_weapon_ammo_updated)
 	#active_weapon.reload_complete.connect(_on_active_weapon_reload_complete)
 	
+	flashlight.battery_updated.connect(_on_flashlight_battery_updated)
+	
 	update_ammo_label(false)
+	update_battery_label()
 
 func _unhandled_input(event: InputEvent) -> void:
 	#Esc to free mouse from window
@@ -70,6 +75,13 @@ func _physics_process(delta: float) -> void:
 	if Input.is_action_just_pressed("reload"):
 		active_weapon.reload()
 		#update_ammo_label(true)
+	
+	#Toggle flashlight
+	if Input.is_action_just_pressed("toggle_flashlight"):
+		if flashlight.get_enabled():
+			flashlight.set_enabled(false)
+		else:
+			flashlight.set_enabled(true)
 
 	move_and_slide()
 
@@ -79,8 +91,14 @@ func update_ammo_label(reloading : bool):
 	else:
 		ammo_label.text = str(active_weapon.clip_ammo) + " / " + str(active_weapon.reserve_ammo)
 
+func update_battery_label() -> void:
+	battery_label.text = "Flashlight battery: " + str(int(flashlight.get_battery())) + "%"
+
 func _on_active_weapon_ammo_updated(reloading : bool) -> void:
 	update_ammo_label(reloading)
+
+func _on_flashlight_battery_updated() -> void:
+	update_battery_label()
 
 #Obsolete
 #func _on_active_weapon_reload_complete():

@@ -97,7 +97,7 @@ func _on_reload_timer_timeout() -> void:
 	reserve_ammo -= ammo_to_reload
 	clip_ammo += ammo_to_reload
 	
-	ammo_updated.emit(true)
+	ammo_updated.emit(false)
 	#reload_complete.emit()
 
 #Will make this a static method at some point
