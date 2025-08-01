@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://crotopo1fdjeg"]
+[gd_scene load_steps=6 format=3 uid="uid://crotopo1fdjeg"]
 
 [ext_resource type="Script" uid="uid://1jm6awng7v27" path="res://enemy.gd" id="1_4gyqm"]
 [ext_resource type="Texture2D" uid="uid://dw4tryi3yerf7" path="res://icon.svg" id="1_7k104"]
@@ -6,8 +6,12 @@
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_7k104"]
 
-[node name="Enemy" type="CharacterBody3D"]
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_qi2p4"]
+height = 1.5
+
+[node name="Enemy" type="CharacterBody3D" node_paths=PackedStringArray("nav_agent")]
 script = ExtResource("1_4gyqm")
+nav_agent = NodePath("NavigationAgent3D")
 
 [node name="HPComponent" parent="." node_paths=PackedStringArray("hurtbox", "hp_label") instance=ExtResource("2_qi2p4")]
 hurtbox = NodePath("../Hurtbox")
@@ -29,6 +33,12 @@ shape = SubResource("BoxShape3D_7k104")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 billboard = 1
 text = "Hello bro"
+
+[node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
+path_height_offset = 3.0
+
+[node name="Collisionbox" type="CollisionShape3D" parent="."]
+shape = SubResource("CapsuleShape3D_qi2p4")
 
 [connection signal="area_entered" from="Hurtbox" to="." method="_on_hurtbox_area_entered"]
 [connection signal="area_entered" from="Hurtbox" to="HPComponent" method="_on_hurtbox_area_entered"]

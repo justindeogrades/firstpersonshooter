@@ -1,9 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://bqdhericuavix"]
-
-[ext_resource type="Texture2D" uid="uid://dw4tryi3yerf7" path="res://icon.svg" id="1_o1etr"]
-
-[node name="AltEnemy" type="CharacterBody3D"]
-
-[node name="Sprite3D" type="Sprite3D" parent="."]
-modulate = Color(1, 0, 1, 1)
-texture = ExtResource("1_o1etr")

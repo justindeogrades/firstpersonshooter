@@ -1,7 +1,5 @@
 extends CharacterBody3D
 
-
-const SPEED = 5.0
 const JUMP_VELOCITY = 4.5
 
 @onready var hud = $HUD
@@ -12,6 +10,7 @@ const JUMP_VELOCITY = 4.5
 @export var head : Node3D
 @export var camera : Camera3D
 @export var flashlight : SpotLight3D
+@export var move_speed : float = 5
 @export var turn_speed : float = 0.005
 @export var min_camera_x_rotation = -90
 @export var max_camera_x_rotation = 90
@@ -58,11 +57,11 @@ func _physics_process(delta: float) -> void:
 	var input_dir := Input.get_vector("left", "right", "forward", "backward")
 	var direction := (head.transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
 	if direction:
-		velocity.x = direction.x * SPEED
-		velocity.z = direction.z * SPEED
+		velocity.x = direction.x * move_speed
+		velocity.z = direction.z * move_speed
 	else:
-		velocity.x = move_toward(velocity.x, 0, SPEED)
-		velocity.z = move_toward(velocity.z, 0, SPEED)
+		velocity.x = move_toward(velocity.x, 0, move_speed)
+		velocity.z = move_toward(velocity.z, 0, move_speed)
 	
 	#Shooting
 	active_weapon.aim_direction = (head.transform.basis * Vector3(0,0,-1)).normalized()
