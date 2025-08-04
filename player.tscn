@@ -1,9 +1,13 @@
-[gd_scene load_steps=6 format=3 uid="uid://c0vtrpdt2d62k"]
+[gd_scene load_steps=10 format=3 uid="uid://c0vtrpdt2d62k"]
 
 [ext_resource type="Script" uid="uid://bhtxkn8jmnjbv" path="res://player.gd" id="1_4flbx"]
 [ext_resource type="PackedScene" uid="uid://c7c1hebwg3vmy" path="res://flashlight.tscn" id="2_hqtel"]
 [ext_resource type="PackedScene" uid="uid://cbtkrj15ysrdc" path="res://guns/machine_gun.tscn" id="2_onrkg"]
 [ext_resource type="PackedScene" uid="uid://l0b3a730q55b" path="res://hud.tscn" id="3_i3pqv"]
+[ext_resource type="PackedScene" uid="uid://02osm3d81amt" path="res://state_machine.tscn" id="5_2hs0m"]
+[ext_resource type="Script" uid="uid://dir4ffdqfq5sn" path="res://states/player_free.gd" id="6_1jxqw"]
+[ext_resource type="Script" uid="uid://c5sbwvc2w80xm" path="res://states/player_sprint.gd" id="7_1jxqw"]
+[ext_resource type="Script" uid="uid://bknxuxv5j4py2" path="res://states/player_slide.gd" id="8_dw050"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_4flbx"]
 
@@ -18,7 +22,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.18799, 0)
 shape = SubResource("BoxShape3D_4flbx")
 
 [node name="Head" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.60231, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.8, 0)
 
 [node name="Camera3D" type="Camera3D" parent="Head"]
 
@@ -30,3 +34,28 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.41584, 0)
 [node name="MachineGun" parent="Head/Camera3D/Weapons" instance=ExtResource("2_onrkg")]
 
 [node name="HUD" parent="." instance=ExtResource("3_i3pqv")]
+
+[node name="StateMachine" parent="." node_paths=PackedStringArray("default_state") instance=ExtResource("5_2hs0m")]
+default_state = NodePath("Free")
+
+[node name="Free" type="Node" parent="StateMachine" node_paths=PackedStringArray("sprint_state")]
+script = ExtResource("6_1jxqw")
+sprint_state = NodePath("../Sprint")
+can_move = true
+
+[node name="Sprint" type="Node" parent="StateMachine" node_paths=PackedStringArray("free_state", "slide_state")]
+script = ExtResource("7_1jxqw")
+free_state = NodePath("../Free")
+slide_state = NodePath("../Slide")
+grace_seconds = 0.25
+move_speed = 10.0
+can_move = true
+
+[node name="Slide" type="Node" parent="StateMachine" node_paths=PackedStringArray("free_state", "sprint_state")]
+script = ExtResource("8_dw050")
+free_state = NodePath("../Free")
+sprint_state = NodePath("../Sprint")
+slide_seconds = 0.8
+head_height_tween_seconds = 0.1
+move_speed = 20.0
+turn_speed = 0.001
