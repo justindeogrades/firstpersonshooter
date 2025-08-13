@@ -10,7 +10,7 @@ extends Node
 @export var can_aim : bool
 @export var can_flash : bool
 
-var parent : CharacterBody3D
+var parent : Node3D
 
 func enter() -> void:
 	pass

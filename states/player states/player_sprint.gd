@@ -10,22 +10,26 @@ var grace_timer : Timer
 var grace_period_expired : bool
 
 func enter() -> void:
+	super()
+	
 	grace_period_expired = false
 	create_grace_timer()
 
-func state_input(event : InputEvent) -> State:
+func state_input(event : InputEvent) -> PlayerState:
 	super(event)
 	
 	#Begin sprinting
 	if event.is_action_released("sprint"):
 		grace_timer.start(grace_seconds)
-	if event.is_action_pressed("slide"):
+	#Sliding
+	#Check if grace period is expired to ensure the grace timer still exists
+	if event.is_action_pressed("slide") and not grace_period_expired:
 		if not grace_timer.is_stopped():
 			return slide_state
 	
 	return null
 
-func state_process() -> State:
+func state_process() -> PlayerState:
 	super()
 	
 	if grace_period_expired:

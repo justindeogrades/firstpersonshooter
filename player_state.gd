@@ -1,7 +1,13 @@
 class_name PlayerState
 extends State
 
-func state_input(event : InputEvent) -> State:
+func enter():
+	#Display state on HUD for debugging purposes
+	parent.update_state_label()
+	
+	parent.active_weapon.can_shoot = can_shoot
+
+func state_input(event : InputEvent) -> PlayerState:
 		#Esc to free mouse from window
 	if event.is_action_pressed("free_mouse"):
 		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
@@ -16,20 +22,21 @@ func state_input(event : InputEvent) -> State:
 		#Limits on vertical rotation
 		parent.camera.rotation.x = clamp(parent.camera.rotation.x, deg_to_rad(parent.min_camera_x_rotation), deg_to_rad(parent.max_camera_x_rotation))
 	return null
-func state_process() -> State:
+func state_process() -> PlayerState:
 	super()
 	
-	#Shooting
-	parent.active_weapon.aim_direction = (parent.head.transform.basis * Vector3(0,0,-1)).normalized()
-	if Input.is_action_pressed("shoot"):
-		if parent.active_weapon.reload_timer.is_stopped():
-			parent.active_weapon.shoot()
-			#update_ammo_label(false)
-	
-	#Reloading
-	if Input.is_action_just_pressed("reload"):
-		parent.active_weapon.reload()
-		#update_ammo_label(true)
+	#Delegating to the weapon's state machine
+	##Shooting
+	#parent.active_weapon.aim_direction = (parent.head.transform.basis * Vector3(0,0,-1)).normalized()
+	#if Input.is_action_pressed("shoot"):
+		#if parent.active_weapon.reload_timer.is_stopped():
+			#parent.active_weapon.shoot()
+			##update_ammo_label(false)
+	#
+	##Reloading
+	#if Input.is_action_just_pressed("reload"):
+		#parent.active_weapon.reload()
+		##update_ammo_label(true)
 	
 	#Toggle flashlight
 	if Input.is_action_just_pressed("toggle_flashlight"):
@@ -39,7 +46,7 @@ func state_process() -> State:
 			parent.flashlight.set_enabled(true)
 	
 	return null
-func state_physics(delta : float) -> State:
+func state_physics(delta : float) -> PlayerState:
 	super(delta)
 	
 	# Add the gravity.

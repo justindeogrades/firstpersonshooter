@@ -11,6 +11,7 @@ extends Node3D
 #Make sure One-shot is enabled on the cooldown timer
 @export var cooldown_timer : Timer
 @export var aim_ray : RayCast3D
+@export var state_machine : Node
 
 @export var damage : float
 @export var max_clip_ammo : int
@@ -25,6 +26,8 @@ extends Node3D
 var clip_ammo
 var reserve_ammo
 
+var can_shoot : bool = true
+
 var aiming : bool = false
 var aim_direction : Vector3
 
@@ -36,51 +39,61 @@ signal ammo_updated(reloading : bool)
 var parent : CharacterBody3D
 
 func _ready() -> void:
-	create_reload_timer()
-	create_cooldown_timer()
-	create_bullet_parent()
+	#All made obsolete by state machine
+	#create_reload_timer()
+	#create_cooldown_timer()
+	#create_bullet_parent()
 	create_aim_ray()
 	
 	clip_ammo = max_clip_ammo
 	reserve_ammo = max_reserve_ammo
+	
+	state_machine.initialize(self)
+
+func _unhandled_input(event: InputEvent) -> void:
+	state_machine.state_input(event)
+
+func _process(delta: float) -> void:
+	state_machine.state_process()
 
 func _physics_process(delta: float) -> void:
+	state_machine.state_physics(delta)
 	#Aim direction is now set by parent
 	
 	#Probably eliminating aim rays
 	#if(aiming):
 		#aim_ray.target_position = get_local_mouse_position()
-	pass
 
-func shoot():
-	#Check for not reloading, not on cooldown, and has ammo
-	if reload_timer.is_stopped() and cooldown_timer.is_stopped() and clip_ammo > 0:
-		for i in bullets_per_shot:
-			var bullet_instance = load(bullet_path).instantiate()
-			
-			#Will return to spray patterns later
-			#var spray_offset
-			#if(aiming):
-				#spray_offset = Vector2(randf_range(aim_spray * -1, aim_spray), randf_range(aim_spray * -1, aim_spray))
-			#else:
-				#spray_offset = Vector2(randf_range(hip_spray * -1, hip_spray), randf_range(hip_spray * -1, hip_spray))
-			#bullet_instance.direction = (aim_direction + spray_offset).normalized()
-			
-			bullet_instance.direction = aim_direction
-			bullet_instance.damage = damage
-			bullet_instance.pierces = pierces
-			bullet_instance.start_pos = global_position
-			
-			bullet_instance.transform.basis = aim_ray.global_transform.basis
-			
-			#bullet_parent.add_child(bullet_instance)
-			get_main().add_child(bullet_instance)
-		
-		clip_ammo -= 1
-		
-		cooldown_timer.start(cooldown_seconds)
-		
-		ammo_updated.emit(false)
+#Delegating all of this to the state machine
+#func shoot():
+	##Check for not reloading, not on cooldown, and has ammo
+	#if reload_timer.is_stopped() and cooldown_timer.is_stopped() and clip_ammo > 0:
+		#for i in bullets_per_shot:
+			#var bullet_instance = load(bullet_path).instantiate()
+			#
+			##Will return to spray patterns later
+			##var spray_offset
+			##if(aiming):
+				##spray_offset = Vector2(randf_range(aim_spray * -1, aim_spray), randf_range(aim_spray * -1, aim_spray))
+			##else:
+				##spray_offset = Vector2(randf_range(hip_spray * -1, hip_spray), randf_range(hip_spray * -1, hip_spray))
+			##bullet_instance.direction = (aim_direction + spray_offset).normalized()
+			#
+			#bullet_instance.direction = aim_direction
+			#bullet_instance.damage = damage
+			#bullet_instance.pierces = pierces
+			#bullet_instance.start_pos = global_position
+			#
+			#bullet_instance.transform.basis = aim_ray.global_transform.basis
+			#
+			##bullet_parent.add_child(bullet_instance)
+			#get_main().add_child(bullet_instance)
+		#
+		#clip_ammo -= 1
+		#
+		#cooldown_timer.start(cooldown_seconds)
+		#
+		#ammo_updated.emit(false)
 
 func reload() -> void:
 	if reload_timer.is_stopped():
@@ -104,22 +117,22 @@ func _on_reload_timer_timeout() -> void:
 func get_main() -> Node:
 	return parent.get_parent()
 
-#Now obsolete, get rid of this later
-func create_bullet_parent():
-	bullet_parent = Node.new()
-	add_child(bullet_parent)
-
-func create_reload_timer() -> void:
-	reload_timer = Timer.new()
-	reload_timer.one_shot = true
-	reload_timer.timeout.connect(_on_reload_timer_timeout)
-	add_child(reload_timer)
-
-func create_cooldown_timer():
-	cooldown_timer = Timer.new()
-	#Oneshot must be enabled so timer stops when time expires
-	cooldown_timer.one_shot = true
-	add_child(cooldown_timer)
+##Now obsolete, get rid of this later
+#func create_bullet_parent():
+	#bullet_parent = Node.new()
+	#add_child(bullet_parent)
+#
+#func create_reload_timer() -> void:
+	#reload_timer = Timer.new()
+	#reload_timer.one_shot = true
+	#reload_timer.timeout.connect(_on_reload_timer_timeout)
+	#add_child(reload_timer)
+#
+#func create_cooldown_timer():
+	#cooldown_timer = Timer.new()
+	##Oneshot must be enabled so timer stops when time expires
+	#cooldown_timer.one_shot = true
+	#add_child(cooldown_timer)
 
 func create_aim_ray():
 	aim_ray = RayCast3D.new()

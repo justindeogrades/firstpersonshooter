@@ -3,7 +3,7 @@ extends PlayerState
 @export var sprint_state : PlayerState
 @export var sneak_state : PlayerState
 
-func state_input(event : InputEvent) -> State:
+func state_input(event : InputEvent) -> PlayerState:
 	super(event)
 	
 	#Begin sprinting

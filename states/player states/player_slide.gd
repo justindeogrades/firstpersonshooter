@@ -14,6 +14,8 @@ var slide_dir : Vector3
 var slide_time_expired : bool
 
 func enter() -> void:
+	super()
+	
 	head_height_to_slide()
 	
 	#Direction is set upon entering so the slide direction cannot change once it starts

@@ -5,17 +5,18 @@
 [ext_resource type="PackedScene" uid="uid://cbtkrj15ysrdc" path="res://guns/machine_gun.tscn" id="2_onrkg"]
 [ext_resource type="PackedScene" uid="uid://l0b3a730q55b" path="res://hud.tscn" id="3_i3pqv"]
 [ext_resource type="PackedScene" uid="uid://02osm3d81amt" path="res://state_machine.tscn" id="5_2hs0m"]
-[ext_resource type="Script" uid="uid://dir4ffdqfq5sn" path="res://states/player_free.gd" id="6_1jxqw"]
-[ext_resource type="Script" uid="uid://c5sbwvc2w80xm" path="res://states/player_sprint.gd" id="7_1jxqw"]
-[ext_resource type="Script" uid="uid://bknxuxv5j4py2" path="res://states/player_slide.gd" id="8_dw050"]
+[ext_resource type="Script" uid="uid://dir4ffdqfq5sn" path="res://states/player states/player_free.gd" id="6_1jxqw"]
+[ext_resource type="Script" uid="uid://c5sbwvc2w80xm" path="res://states/player states/player_sprint.gd" id="7_1jxqw"]
+[ext_resource type="Script" uid="uid://bknxuxv5j4py2" path="res://states/player states/player_slide.gd" id="8_dw050"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_4flbx"]
 
-[node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("head", "camera", "flashlight")]
+[node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("head", "camera", "flashlight", "state_machine")]
 script = ExtResource("1_4flbx")
 head = NodePath("Head")
 camera = NodePath("Head/Camera3D")
 flashlight = NodePath("Head/Camera3D/Flashlight")
+state_machine = NodePath("StateMachine")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.18799, 0)
@@ -47,7 +48,7 @@ can_move = true
 script = ExtResource("7_1jxqw")
 free_state = NodePath("../Free")
 slide_state = NodePath("../Slide")
-grace_seconds = 0.25
+grace_seconds = 0.1
 move_speed = 10.0
 can_move = true
 

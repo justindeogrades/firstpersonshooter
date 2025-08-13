@@ -1,11 +1,36 @@
-[gd_scene load_steps=2 format=3 uid="uid://cbtkrj15ysrdc"]
+[gd_scene load_steps=6 format=3 uid="uid://cbtkrj15ysrdc"]
 
 [ext_resource type="Script" uid="uid://cw11p7sjrucc4" path="res://gun.gd" id="1_sh1sg"]
+[ext_resource type="PackedScene" uid="uid://02osm3d81amt" path="res://state_machine.tscn" id="2_vgf68"]
+[ext_resource type="Script" uid="uid://cfplo1p08lcj4" path="res://states/gun states/gun_free.gd" id="3_ka0p4"]
+[ext_resource type="Script" uid="uid://cdxo172als0sn" path="res://states/gun states/gun_shoot.gd" id="4_b4v0m"]
+[ext_resource type="Script" uid="uid://c1na8swca3ohp" path="res://states/gun states/gun_reload.gd" id="5_ka0p4"]
 
-[node name="MachineGun" type="Node3D"]
+[node name="MachineGun" type="Node3D" node_paths=PackedStringArray("state_machine")]
 script = ExtResource("1_sh1sg")
+state_machine = NodePath("StateMachine")
 damage = 1.0
 max_clip_ammo = 20
 max_reserve_ammo = 100
 reload_seconds = 1.0
 cooldown_seconds = 0.1
+
+[node name="StateMachine" parent="." node_paths=PackedStringArray("default_state") instance=ExtResource("2_vgf68")]
+default_state = NodePath("Free")
+
+[node name="Free" type="Node" parent="StateMachine" node_paths=PackedStringArray("shoot_state", "reload_state")]
+script = ExtResource("3_ka0p4")
+shoot_state = NodePath("../Shoot")
+reload_state = NodePath("../Reload")
+
+[node name="Shoot" type="Node" parent="StateMachine" node_paths=PackedStringArray("free_state", "reload_state")]
+script = ExtResource("4_b4v0m")
+free_state = NodePath("../Free")
+reload_state = NodePath("../Reload")
+damage = 1.0
+cooldown_seconds = 0.1
+
+[node name="Reload" type="Node" parent="StateMachine" node_paths=PackedStringArray("free_state", "shoot_state")]
+script = ExtResource("5_ka0p4")
+free_state = NodePath("../Free")
+shoot_state = NodePath("../Shoot")

@@ -3,9 +3,9 @@ extends Node
 @export var default_state : State
 @export var current_state : State
 
-var parent : CharacterBody3D
+var parent : Node3D
 
-func initialize(par : CharacterBody3D) -> void:
+func initialize(par : Node3D) -> void:
 	#Store the reference to the parent
 	parent = par
 	
@@ -16,13 +16,14 @@ func initialize(par : CharacterBody3D) -> void:
 	current_state = default_state
 	
 	#Default the label text
-	parent.update_state_label()
+	#Delegated to the PlayerState class
+	#parent.update_state_label()
 
 func change_state(next_state : State) -> void:
 	current_state.exit()
-	next_state.enter()
 	current_state = next_state
-	parent.update_state_label()
+	current_state.enter()
+	#parent.update_state_label()
 
 #Called every frame
 func state_input(event : InputEvent) -> void:

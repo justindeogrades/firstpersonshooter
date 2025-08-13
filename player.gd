@@ -7,11 +7,12 @@ const JUMP_VELOCITY = 4.5
 @onready var ammo_label = $HUD/VBoxContainer/Ammo
 @onready var battery_label = $HUD/VBoxContainer/Battery
 @onready var state_label = $HUD/VBoxContainer/State
-@onready var state_machine = $StateMachine
+#@onready var state_machine = $StateMachine
 
 @export var head : Node3D
 @export var camera : Camera3D
 @export var flashlight : SpotLight3D
+@export var state_machine : Node
 @export var move_speed : float = 5
 @export var turn_speed : float = 0.005
 @export var min_camera_x_rotation = -90
