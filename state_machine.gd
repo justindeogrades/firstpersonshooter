@@ -14,6 +14,7 @@ func initialize(par : Node3D) -> void:
 		child.parent = parent
 	
 	current_state = default_state
+	current_state.enter()
 	
 	#Default the label text
 	#Delegated to the PlayerState class

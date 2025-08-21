@@ -1,10 +1,27 @@
-[gd_scene load_steps=6 format=3 uid="uid://crotopo1fdjeg"]
+[gd_scene load_steps=9 format=3 uid="uid://crotopo1fdjeg"]
 
 [ext_resource type="Script" uid="uid://1jm6awng7v27" path="res://enemy.gd" id="1_4gyqm"]
-[ext_resource type="Texture2D" uid="uid://dw4tryi3yerf7" path="res://icon.svg" id="1_7k104"]
 [ext_resource type="PackedScene" uid="uid://b3plxqqbt2u7w" path="res://hp_component.tscn" id="2_qi2p4"]
+[ext_resource type="Texture2D" uid="uid://ctd2mcgmwrxu4" path="res://texturemonster11.png" id="3_qi2p4"]
+[ext_resource type="PackedScene" uid="uid://02osm3d81amt" path="res://state_machine.tscn" id="4_iifgy"]
+[ext_resource type="Script" uid="uid://pto1n7rndium" path="res://enemy_patrol.gd" id="5_epg4t"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_7k104"]
+
+[sub_resource type="FontFile" id="FontFile_qi2p4"]
+subpixel_positioning = 0
+msdf_pixel_range = 14
+msdf_size = 128
+cache/0/32/0/ascent = 0.0
+cache/0/32/0/descent = 0.0
+cache/0/32/0/underline_position = 0.0
+cache/0/32/0/underline_thickness = 0.0
+cache/0/32/0/scale = 1.0
+cache/0/16/0/ascent = 0.0
+cache/0/16/0/descent = 0.0
+cache/0/16/0/underline_position = 0.0
+cache/0/16/0/underline_thickness = 0.0
+cache/0/16/0/scale = 1.0
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_qi2p4"]
 height = 1.5
@@ -18,11 +35,11 @@ hurtbox = NodePath("../Hurtbox")
 hp_label = NodePath("../HP")
 
 [node name="Sprite3D" type="Sprite3D" parent="."]
+transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, 0, 0, 0)
 cast_shadow = 0
-modulate = Color(1, 0, 0, 1)
-billboard = 1
+billboard = 2
 shaded = true
-texture = ExtResource("1_7k104")
+texture = ExtResource("3_qi2p4")
 
 [node name="Hurtbox" type="Area3D" parent="."]
 
@@ -30,9 +47,15 @@ texture = ExtResource("1_7k104")
 shape = SubResource("BoxShape3D_7k104")
 
 [node name="HP" type="Label3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3124, 0)
 billboard = 1
 text = "Hello bro"
+
+[node name="Angle" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.00901, 0)
+billboard = 1
+text = "Hello bro"
+font = SubResource("FontFile_qi2p4")
 
 [node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
 path_height_offset = 3.0
@@ -40,5 +63,40 @@ path_height_offset = 3.0
 [node name="Collisionbox" type="CollisionShape3D" parent="."]
 shape = SubResource("CapsuleShape3D_qi2p4")
 
+[node name="FacingRay" type="RayCast3D" parent="."]
+target_position = Vector3(0, 0, 1)
+
+[node name="StateMachine" parent="." node_paths=PackedStringArray("default_state") instance=ExtResource("4_iifgy")]
+default_state = NodePath("Patrol")
+
+[node name="Patrol" type="Node" parent="StateMachine" node_paths=PackedStringArray("patrol_points")]
+script = ExtResource("5_epg4t")
+patrol_points = [NodePath("../../PP1"), NodePath("../../PP2"), NodePath("../../PP3")]
+
+[node name="PP1" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0, 0)
+top_level = true
+
+[node name="Label3D" type="Label3D" parent="PP1"]
+billboard = 1
+text = "patrol point 1"
+
+[node name="PP2" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 10)
+top_level = true
+
+[node name="Label3D" type="Label3D" parent="PP2"]
+billboard = 1
+text = "patrol point 2"
+
+[node name="PP3" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0, 10)
+top_level = true
+
+[node name="Label3D" type="Label3D" parent="PP3"]
+billboard = 1
+text = "patrol point 3"
+
 [connection signal="area_entered" from="Hurtbox" to="." method="_on_hurtbox_area_entered"]
 [connection signal="area_entered" from="Hurtbox" to="HPComponent" method="_on_hurtbox_area_entered"]
+[connection signal="target_reached" from="NavigationAgent3D" to="StateMachine/Patrol" method="_on_navigation_agent_3d_target_reached"]
