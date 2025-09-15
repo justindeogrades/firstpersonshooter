@@ -1,8 +1,11 @@
 extends EnemyState
 
+@export var pursue_state : EnemyState
+
 @export var patrol_points : Array[Node3D]
 #@export var deadzone : float = 0.9
 @export var wait_seconds : float = 2.0
+@export var detection_dist : float = 10.0
 
 var wait_timer : Timer
 var next_point : Node3D
@@ -31,6 +34,12 @@ func state_physics(delta : float) -> EnemyState:
 		parent.velocity = Vector3(0, 0, 0)
 	
 	parent.move_and_slide()
+	
+	var dist_to_player = (parent.global_position - parent.target.global_position).length()
+	
+	#Detect player if within a 45 degree angle of facing direction and within detection distance
+	if -22.5 < parent.angle_to_target and parent.angle_to_target < 22.5 and dist_to_player < detection_dist:
+		return pursue_state
 	
 	return null
 

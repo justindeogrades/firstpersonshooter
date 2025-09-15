@@ -4,5 +4,6 @@ extends State
 var nav_agent : NavigationAgent3D
 
 func enter() -> void:
+	parent.update_state_label()
 	nav_agent = parent.nav_agent
 	print("nav agent assigned: " + str(nav_agent))

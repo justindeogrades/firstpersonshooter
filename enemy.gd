@@ -1,6 +1,7 @@
 extends CharacterBody3D
 
 @onready var hp_label = $HP
+@onready var state_label = $State
 @onready var state_machine = $StateMachine
 @onready var facing_ray = $FacingRay
 
@@ -15,6 +16,7 @@ extends CharacterBody3D
 var current_hp = max_hp
 
 var target : CharacterBody3D
+var angle_to_target : int
 
 func _ready() -> void:
 	target = get_node(target_path)
@@ -40,7 +42,11 @@ func _process(delat : float) -> void:
 	#var target_dir = Vector2(target.global_position.x, target.global_position.z)
 	var relative_player_pos = Vector2(target.global_position.x - global_position.x, target.global_position.z - global_position.z)
 	#var angle = int(rad_to_deg(face_dir.angle_to(target_dir)))
-	var angle = int(rad_to_deg(face_dir.angle_to(relative_player_pos)))
-	$Angle.text = "angle: " + str(angle)
+	angle_to_target = int(rad_to_deg(face_dir.angle_to(relative_player_pos)))
+	$Angle.text = "angle: " + str(angle_to_target)
+
 func _physics_process(delta: float) -> void:
 	state_machine.state_physics(delta)
+
+func update_state_label() -> void:
+	state_label.text = "state: " + state_machine.current_state.name
