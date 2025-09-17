@@ -1,10 +1,11 @@
-[gd_scene load_steps=6 format=3 uid="uid://cbtkrj15ysrdc"]
+[gd_scene load_steps=7 format=3 uid="uid://cbtkrj15ysrdc"]
 
 [ext_resource type="Script" uid="uid://cw11p7sjrucc4" path="res://gun.gd" id="1_sh1sg"]
 [ext_resource type="PackedScene" uid="uid://02osm3d81amt" path="res://state_machine.tscn" id="2_vgf68"]
 [ext_resource type="Script" uid="uid://cfplo1p08lcj4" path="res://states/gun states/gun_free.gd" id="3_ka0p4"]
 [ext_resource type="Script" uid="uid://cdxo172als0sn" path="res://states/gun states/gun_shoot.gd" id="4_b4v0m"]
 [ext_resource type="Script" uid="uid://c1na8swca3ohp" path="res://states/gun states/gun_reload.gd" id="5_ka0p4"]
+[ext_resource type="Texture2D" uid="uid://b4yy8kb48eca7" path="res://sprites/guns/aridea.png" id="6_b4v0m"]
 
 [node name="MachineGun" type="Node3D" node_paths=PackedStringArray("state_machine")]
 script = ExtResource("1_sh1sg")
@@ -23,14 +24,26 @@ script = ExtResource("3_ka0p4")
 shoot_state = NodePath("../Shoot")
 reload_state = NodePath("../Reload")
 
-[node name="Shoot" type="Node" parent="StateMachine" node_paths=PackedStringArray("free_state", "reload_state")]
+[node name="Shoot" type="Node" parent="StateMachine" node_paths=PackedStringArray("free_state", "reload_state", "barrel_flash_spotlight")]
 script = ExtResource("4_b4v0m")
 free_state = NodePath("../Free")
 reload_state = NodePath("../Reload")
+barrel_flash_spotlight = NodePath("../../BarrelFlash")
 damage = 1.0
 cooldown_seconds = 0.1
+barrel_flash_seconds = 0.001
 
 [node name="Reload" type="Node" parent="StateMachine" node_paths=PackedStringArray("free_state", "shoot_state")]
 script = ExtResource("5_ka0p4")
 free_state = NodePath("../Free")
 shoot_state = NodePath("../Shoot")
+
+[node name="Sprite3D" type="Sprite3D" parent="."]
+transform = Transform3D(-8.74228e-09, 0, -0.2, 0, 0.2, 0, 0.2, 0, -8.74228e-09, 0, 0, 0)
+texture = ExtResource("6_b4v0m")
+
+[node name="BarrelFlash" type="SpotLight3D" parent="."]
+light_energy = 16.0
+light_indirect_energy = 16.0
+spot_range = 4096.0
+spot_angle = 89.99

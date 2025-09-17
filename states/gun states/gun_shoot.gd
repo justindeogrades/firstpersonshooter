@@ -2,19 +2,27 @@ extends GunState
 
 @export var free_state : GunState
 @export var reload_state : GunState
+@export var barrel_flash_spotlight : SpotLight3D
 
 @export var damage : float
 @export var cooldown_seconds : float
+@export var barrel_flash_seconds : float
 @export var hip_spray : float
 @export var aim_spray : float
 @export var bullets_per_shot : int = 1
 @export var pierces : int = 1
 
 var cooldown_timer : Timer = null
+var barrel_flash_timer : Timer = null
 
 func enter() -> void:
 	if cooldown_timer == null:
 		create_cooldown_timer()
+	if barrel_flash_timer == null:
+		create_barrel_flash_timer()
+
+func exit() -> void:
+	pass
 
 func state_input(event : InputEvent) -> GunState:
 	#Stopping shooting
@@ -48,12 +56,22 @@ func state_process() -> GunState:
 			
 			#bullet_parent.add_child(bullet_instance)
 			parent.get_main().add_child(bullet_instance)
+			
+			#Barrel flash
+			barrel_flash_spotlight.visible = true
+			print(barrel_flash_spotlight.visible)
+			barrel_flash_timer.start(barrel_flash_seconds)
 		
 		parent.clip_ammo -= 1
 		
 		cooldown_timer.start(cooldown_seconds)
 		
 		parent.ammo_updated.emit(false)
+		
+		##Barrel flash
+		#barrel_flash_spotlight.visible = true
+		#print(barrel_flash_spotlight.visible)
+		#barrel_flash_timer.start(barrel_flash_seconds)
 		
 	return null
 
@@ -62,3 +80,15 @@ func create_cooldown_timer():
 	#Oneshot must be enabled so timer stops when time expires
 	cooldown_timer.one_shot = true
 	add_child(cooldown_timer)
+
+func create_barrel_flash_timer():
+	barrel_flash_timer = Timer.new()
+	#Oneshot must be enabled so timer stops when time expires
+	barrel_flash_timer.one_shot = true
+	barrel_flash_timer.timeout.connect(_on_barrel_flash_timer_timeout)
+	add_child(barrel_flash_timer)
+
+func _on_barrel_flash_timer_timeout():
+	print("entered _on_barrel_flash_timer_timeout")
+	barrel_flash_spotlight.visible = false
+	print(barrel_flash_spotlight.visible)

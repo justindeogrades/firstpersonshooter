@@ -33,6 +33,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.8, 0)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.41584, 0)
 
 [node name="MachineGun" parent="Head/Camera3D/Weapons" instance=ExtResource("2_onrkg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.292624, 0.103059, -0.389013)
 
 [node name="HUD" parent="." instance=ExtResource("3_i3pqv")]
 
